@@ -42,6 +42,12 @@ FractionalWheelTest >> testLargeIntegerIsConvertibleToWheel [
 		equals: (FractionalWheel numerator: tmp denominator: 1)
 ]
 
+{ #category : #'basic tests' }
+FractionalWheelTest >> testNumberZeroCanDividedByWheelOne [
+
+		self assert: 0 / FractionalWheel one equals: FractionalWheel zero
+]
+
 { #category : #tests }
 FractionalWheelTest >> testSmallIntegerIsConvertibleToWheel [
 
@@ -54,4 +60,10 @@ FractionalWheelTest >> testWheelIsConvertibleToWheel [
 	| tmp |
 	tmp := FractionalWheel inf.
 	self assert: tmp asWheel equals: tmp
+]
+
+{ #category : #'basic tests' }
+FractionalWheelTest >> testZeroCanBeDividedByZero [
+
+	self assert: FractionalWheel zero / FractionalWheel zero equals: FractionalWheel nan
 ]
