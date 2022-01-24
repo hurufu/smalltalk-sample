@@ -33,6 +33,19 @@ FractionalWheelTest >> testFractionIsConvertibleToWheel [
 ]
 
 { #category : #tests }
+FractionalWheelTest >> testHandleDivisionByZeroInTheMiddleOfCalculation [
+
+	| tmp res |
+	tmp := 3 / 5 asWheel.
+	res := tmp + (1 / (tmp / (tmp - tmp))).
+
+	self
+		assert: tmp
+		equals: (FractionalWheel numerator: 3 denominator: 5).
+	self assert: res equals: tmp
+]
+
+{ #category : #tests }
 FractionalWheelTest >> testLargeIntegerIsConvertibleToWheel [
 
 	| tmp |
