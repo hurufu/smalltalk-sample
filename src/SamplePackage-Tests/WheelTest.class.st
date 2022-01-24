@@ -8,6 +8,16 @@ Class {
 }
 
 { #category : #'basic tests' }
+WheelTest >> testCanBeDividedByZero [
+
+	"comment stating purpose of instance-side method"
+
+	"scope: class-variables  &  instance-variables"
+
+	self assert: ((Wheel numerator: 1 denominator: 0) / 0) equals: (Wheel numerator: 0 denominator: 0)
+]
+
+{ #category : #'basic tests' }
 WheelTest >> testCanByConstructed [
 	"A fractional wheel object can be created without causing divideTwoByZero error"
 	"scope: class-variables  &  instance-variables"	
@@ -15,15 +25,4 @@ WheelTest >> testCanByConstructed [
 	| tmp |
 	tmp := Wheel new numerator: 1 denominator: 0.
 	self deny: tmp equals: nil
-]
-
-{ #category : #'basic tests' }
-WheelTest >> testCanDividyByZero [
-	"A fractional wheel object can be created without causing divideTwoByZero error"
-	"scope: class-variables  &  instance-variables"	
-			
-	| a b |
-	a := Wheel new numerator: 1 denominator: 1.
-	b := Wheel new numerator: 0 denominator: 0.
-	self assert: a/b equals: (Wheel new numerator: 1 denominator: 0).
 ]
