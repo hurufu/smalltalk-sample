@@ -49,7 +49,7 @@ FractionalWheelTest >> testHandleDivisionByZeroInTheMiddleOfCalculation [
 FractionalWheelTest >> testLargeIntegerIsConvertibleToWheel [
 
 	| tmp |
-	tmp := SmallInteger maxVal * 1.
+	tmp := SmallInteger minVal - 1.
 	self
 		assert: tmp asWheel
 		equals: (FractionalWheel numerator: tmp denominator: 1)
