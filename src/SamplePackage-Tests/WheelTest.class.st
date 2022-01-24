@@ -7,8 +7,8 @@ Class {
 	#category : #'SamplePackage-Tests'
 }
 
-{ #category : #'as yet unclassified' }
-WheelTest >> wheelCanByConstructed [
+{ #category : #'basic tests' }
+WheelTest >> testCanByConstructed [
 	"A fractional wheel object can be created without causing divideTwoByZero error"
 	"scope: class-variables  &  instance-variables"	
 			
@@ -17,8 +17,8 @@ WheelTest >> wheelCanByConstructed [
 	self deny: tmp equals: nil
 ]
 
-{ #category : #'as yet unclassified' }
-WheelTest >> wheelCanDividyByZero [
+{ #category : #'basic tests' }
+WheelTest >> testCanDividyByZero [
 	"A fractional wheel object can be created without causing divideTwoByZero error"
 	"scope: class-variables  &  instance-variables"	
 			
