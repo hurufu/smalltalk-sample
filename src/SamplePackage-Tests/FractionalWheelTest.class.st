@@ -7,32 +7,32 @@ Class {
 	#category : #'SamplePackage-Tests'
 }
 
-{ #category : #'basic tests' }
+{ #category : #'tests - arithmetic' }
 FractionalWheelTest >> testCanBeDividedByZero [
 
 	self assert: FractionalWheel one / 0 equals: FractionalWheel inf
 ]
 
-{ #category : #'basic tests' }
+{ #category : #'tests - basic' }
 FractionalWheelTest >> testCanByConstructed [
 
 	self deny: FractionalWheel nan equals: nil
 ]
 
-{ #category : #tests }
+{ #category : #'tests - conversions' }
 FractionalWheelTest >> testFloatIsConvertibleToWheel [
 
 	self assert: 1.0 asWheel equals: FractionalWheel one
 ]
 
-{ #category : #tests }
+{ #category : #'tests - conversions' }
 FractionalWheelTest >> testFractionIsConvertibleToWheel [
 	self
 		assert: 1 / 3 asWheel
 		equals: (FractionalWheel numerator: 1 denominator: 3)
 ]
 
-{ #category : #tests }
+{ #category : #'tests - arithmetic' }
 FractionalWheelTest >> testHandleDivisionByZeroInTheMiddleOfCalculation [
 
 	| tmp res |
@@ -45,7 +45,7 @@ FractionalWheelTest >> testHandleDivisionByZeroInTheMiddleOfCalculation [
 	self assert: res equals: tmp
 ]
 
-{ #category : #tests }
+{ #category : #'tests - conversions' }
 FractionalWheelTest >> testLargeIntegerIsConvertibleToWheel [
 
 	| tmp |
@@ -55,19 +55,19 @@ FractionalWheelTest >> testLargeIntegerIsConvertibleToWheel [
 		equals: (FractionalWheel numerator: tmp denominator: 1)
 ]
 
-{ #category : #'basic tests' }
+{ #category : #'tests - arithmetic' }
 FractionalWheelTest >> testNumberZeroCanDividedByWheelOne [
 
 		self assert: 0 / FractionalWheel one equals: FractionalWheel zero
 ]
 
-{ #category : #tests }
+{ #category : #'tests - conversions' }
 FractionalWheelTest >> testSmallIntegerIsConvertibleToWheel [
 
 	self assert: 1 asWheel equals: FractionalWheel one
 ]
 
-{ #category : #tests }
+{ #category : #'tests - conversions' }
 FractionalWheelTest >> testWheelIsConvertibleToWheel [
 
 	| tmp |
@@ -75,7 +75,7 @@ FractionalWheelTest >> testWheelIsConvertibleToWheel [
 	self assert: tmp asWheel equals: tmp
 ]
 
-{ #category : #'basic tests' }
+{ #category : #'tests - arithmetic' }
 FractionalWheelTest >> testZeroCanBeDividedByZero [
 
 	self assert: FractionalWheel zero / FractionalWheel zero equals: FractionalWheel nan
