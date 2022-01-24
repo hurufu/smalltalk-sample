@@ -19,7 +19,7 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #Wheel,
+	#name : #FractionalWheel,
 	#superclass : #Number,
 	#instVars : [
 		'l',
@@ -29,17 +29,7 @@ Class {
 }
 
 { #category : #constants }
-Wheel class >> T [
-
-	"comment stating purpose of class-side method"
-
-	"scope: class-variables  &  class-instance-variables"
-
-	^self numerator: 0 denominator: 0
-]
-
-{ #category : #constants }
-Wheel class >> inf [
+FractionalWheel class >> inf [
 
 	"comment stating purpose of class-side method"
 
@@ -48,26 +38,20 @@ Wheel class >> inf [
 	^self numerator: 1 denominator: 0
 ]
 
-{ #category : #'instance creation' }
-Wheel class >> new [
-	"comment stating purpose of class-side method"
-	"scope: class-variables  &  class-instance-variables"	
+{ #category : #constants }
+FractionalWheel class >> nan [
 
-	^super new numerator: 0 denominator: 0
+	^ self numerator: 0 denominator: 0
 ]
 
 { #category : #'instance creation' }
-Wheel class >> numerator: n denominator: d [
+FractionalWheel class >> numerator: n denominator: d [
 
-	"comment stating purpose of class-side method"
-
-	"scope: class-variables  &  class-instance-variables"
-
-	^ self new numerator: n denominator: d
+	^ self new numerator: n; denominator: d
 ]
 
 { #category : #constants }
-Wheel class >> one [
+FractionalWheel class >> one [
 
 	"comment stating purpose of class-side method"
 
@@ -77,7 +61,7 @@ Wheel class >> one [
 ]
 
 { #category : #constants }
-Wheel class >> zero [
+FractionalWheel class >> zero [
 
 	"comment stating purpose of class-side method"
 
@@ -87,96 +71,134 @@ Wheel class >> zero [
 ]
 
 { #category : #arithmetic }
-Wheel >> * aNumber [ 
+FractionalWheel >> * aNumber [ 
 	"Answer the result of multiplying the receiver by aNumber."
 
 	^self asFraction * aNumber
 ]
 
 { #category : #arithmetic }
-Wheel >> + aNumber [ 
+FractionalWheel >> + aNumber [ 
 	"Answer the sum of the receiver and aNumber."
 
 	^self asFraction + aNumber
 ]
 
 { #category : #arithmetic }
-Wheel >> - aNumber [ 
+FractionalWheel >> - aNumber [ 
 	"Answer the difference between the receiver and aNumber."
 
 	^self asFraction - aNumber
 ]
 
 { #category : #arithmetic }
-Wheel >> / aNumber [ 
+FractionalWheel >> / aNumber [
+
 	"Answer the result of dividing the receiver by aNumber."
 
-	^Wheel new numerator: l*aNumber denominator: m
+	^self* aNumber asWheel reciprocal 
 ]
 
 { #category : #testing }
-Wheel >> < aMagnitude [ 
+FractionalWheel >> < aMagnitude [ 
 	"Answer whether the receiver is less than the argument."
 
 	^self asFraction < aMagnitude
 ]
 
 { #category : #comparing }
-Wheel >> = aMagnitude [ 
-	"Compare the receiver with the argument and answer with true if the 
-	receiver is equal to the argument. Otherwise answer false."
+FractionalWheel >> = aMagnitude [
 
-	^self asFraction = aMagnitude
+	"Compare the receiver with the argument and answer with true if the receiver is equal to the argument. Otherwise answer false."
+
+	m = 0
+		ifTrue: [ 
+			aMagnitude isWheel
+				ifTrue: [ 
+				^ l = aMagnitude numerator & (m = aMagnitude denominator) ]
+				ifFalse: [ ^ false ] ]
+		ifFalse: [ ^ self asFraction = aMagnitude ]
 ]
 
 { #category : #converting }
-Wheel >> adaptToFraction: rcvr andSend: selector [
+FractionalWheel >> adaptToFraction: rcvr andSend: selector [
 	"If I am involved in arithmetic with a Fraction, convert us and evaluate exprBlock."
 	^(rcvr asWheel) perform: selector with: self
 ]
 
 { #category : #converting }
-Wheel >> adaptToInteger: rcvr andSend: selector [
+FractionalWheel >> adaptToInteger: rcvr andSend: selector [
 	"If I am involved in arithmetic with a Integer, convert us and evaluate exprBlock."
-	^ (Wheel numerator: rcvr denominator: 1) perform: selector with: self
+	^ (FractionalWheel numerator: rcvr denominator: 1) perform: selector with: self
 ]
 
 { #category : #converting }
-Wheel >> asFloat [
+FractionalWheel >> asFloat [
 	"Answer a floating-point number approximating the receiver."
 
 	^self asFraction asFloat
 ]
 
 { #category : #converting }
-Wheel >> asFraction [
+FractionalWheel >> asFraction [
 
-	"comment stating purpose of instance-side method"
-
-	"scope: class-variables  &  instance-variables"
+	"I know that if I divide by zero the following message will raise an error, but hey, why did you ask to represent me as a Fraction!"
 
 	^ l / m
 ]
 
-{ #category : #comparing }
-Wheel >> hash [
-	"Hash must be redefined whenever = is redefined."
+{ #category : #private }
+FractionalWheel >> denominator [
 
-	^l hash bitXor: m hash
+^m
 ]
 
-{ #category : #'instance creation' }
-Wheel >> numerator: n denominator: d [
-	"comment stating purpose of instance-side method"
-	"scope: class-variables  &  instance-variables"	
-			
-	l := n.
-	m := d
-	
+{ #category : #private }
+FractionalWheel >> denominator: newDenominator [
+
+m := newDenominator
+]
+
+{ #category : #comparing }
+FractionalWheel >> hash [
+
+	"My most close relative is Fraction class, that's why I try to have the same hash value whenever it's possible (ie. when I don't divide by zero), otherwise I use custom hash formula from Point class because it has the same structure: pair of numbers."
+
+	m = 0
+		ifTrue: [ ^ (l@m) hash ]
+		ifFalse: [ ^ self asFraction hash ]
+]
+
+{ #category : #testing }
+FractionalWheel >> isFraction [
+
+	"I'm a fraction only when I don't divide by zero."
+
+	m = 0
+		ifTrue: [ ^ false ]
+		ifFalse: [ ^ true ]
+]
+
+{ #category : #testing }
+FractionalWheel >> isWheel [
+
+	^true
+]
+
+{ #category : #private }
+FractionalWheel >> numerator [
+
+^l
+]
+
+{ #category : #private }
+FractionalWheel >> numerator: newNumerator [
+
+	l := newNumerator
 ]
 
 { #category : #printing }
-Wheel >> printOn: aStream base: base [
+FractionalWheel >> printOn: aStream base: base [
 	"This method should print a representation of the number for the given base,
 	excluding the base prefix (and the letter r for radix)"
 	
@@ -185,8 +207,14 @@ Wheel >> printOn: aStream base: base [
 	m printOn: aStream base: base
 ]
 
+{ #category : #arithmetic }
+FractionalWheel >> reciprocal [
+
+	^self class numerator: m denominator: l
+]
+
 { #category : #'truncation and round off' }
-Wheel >> round: numberOfWishedDecimal [
+FractionalWheel >> round: numberOfWishedDecimal [
 	"Round the decimal part of the receiver to be limited to the number of wished decimal. Only leave a fixed amount of decimal"
    < expr: 10.12345 round: 2 result: 10.12 >
 	< expr: 10.199999999 round: 2 result: 10.2 > 
@@ -194,7 +222,7 @@ Wheel >> round: numberOfWishedDecimal [
 ]
 
 { #category : #printing }
-Wheel >> storeOn: aStream base: base [
+FractionalWheel >> storeOn: aStream base: base [
 	"This method should print a representation of the number for the given base,
 	including the base prefix (with letter r for radix)"
 	
