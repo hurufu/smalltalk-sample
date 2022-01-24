@@ -3,7 +3,8 @@ Extension { #name : #Number }
 { #category : #'*SamplePackage' }
 Number >> asWheel [
 
-	^ FractionalWheel numerator: self denominator: 1
+	self isWheel ifTrue: [ ^self ] ifFalse: [ 	^ FractionalWheel numerator: self denominator: 1 ]
+
 ]
 
 { #category : #'*SamplePackage' }

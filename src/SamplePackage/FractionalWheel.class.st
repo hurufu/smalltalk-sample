@@ -71,10 +71,12 @@ FractionalWheel class >> zero [
 ]
 
 { #category : #arithmetic }
-FractionalWheel >> * aNumber [ 
-	"Answer the result of multiplying the receiver by aNumber."
+FractionalWheel >> * aNumber [
 
-	^self asFraction * aNumber
+	"Answer the result of multiplying the receiver by aNumber."
+	|x|
+	x := aNumber asWheel.
+	^ self class numerator: l * x numerator denominator: m * x denominator
 ]
 
 { #category : #arithmetic }
@@ -199,12 +201,18 @@ FractionalWheel >> numerator: newNumerator [
 
 { #category : #printing }
 FractionalWheel >> printOn: aStream base: base [
+
 	"This method should print a representation of the number for the given base,
 	excluding the base prefix (and the letter r for radix)"
-	
+
 	l printOn: aStream base: base.
-	aStream nextPut: $/.
-	m printOn: aStream base: base
+	aStream nextPut: $|.
+	m printOn: aStream base: base.
+	aStream nextPut: Character space; nextPut: $(.
+	m = 0
+		ifTrue: [ aStream nextPutAll: 'nan' ]
+		ifFalse: [ self asFloat printOn: aStream base: base ].
+	aStream nextPut: $)
 ]
 
 { #category : #arithmetic }
