@@ -14,7 +14,7 @@ WheelTest >> testCanBeDividedByZero [
 
 	"scope: class-variables  &  instance-variables"
 
-	self assert: ((Wheel numerator: 1 denominator: 0) / 0) equals: (Wheel numerator: 0 denominator: 0)
+	self assert: (Wheel one) / 0 equals: (Wheel zero)
 ]
 
 { #category : #'basic tests' }

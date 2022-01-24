@@ -25,7 +25,7 @@ Class {
 		'l',
 		'm'
 	],
-	#category : #SamplePackage
+	#category : #'SamplePackage-Numeric'
 }
 
 { #category : #constants }
