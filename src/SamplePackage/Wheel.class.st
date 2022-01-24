@@ -28,12 +28,62 @@ Class {
 	#category : #SamplePackage
 }
 
+{ #category : #constants }
+Wheel class >> T [
+
+	"comment stating purpose of class-side method"
+
+	"scope: class-variables  &  class-instance-variables"
+
+	^self numerator: 0 denominator: 0
+]
+
+{ #category : #constants }
+Wheel class >> inf [
+
+	"comment stating purpose of class-side method"
+
+	"scope: class-variables  &  class-instance-variables"
+
+	^self numerator: 1 denominator: 0
+]
+
 { #category : #'instance creation' }
 Wheel class >> new [
 	"comment stating purpose of class-side method"
 	"scope: class-variables  &  class-instance-variables"	
 
 	^super new numerator: 0 denominator: 0
+]
+
+{ #category : #'instance creation' }
+Wheel class >> numerator: n denominator: d [
+
+	"comment stating purpose of class-side method"
+
+	"scope: class-variables  &  class-instance-variables"
+
+	^ self new numerator: n denominator: d
+]
+
+{ #category : #constants }
+Wheel class >> one [
+
+	"comment stating purpose of class-side method"
+
+	"scope: class-variables  &  class-instance-variables"
+
+	^self numerator: 1 denominator: 1
+]
+
+{ #category : #constants }
+Wheel class >> zero [
+
+	"comment stating purpose of class-side method"
+
+	"scope: class-variables  &  class-instance-variables"
+
+	^self numerator: 0 denominator: 1
 ]
 
 { #category : #arithmetic }
@@ -98,7 +148,7 @@ Wheel >> asFloat [
 	^self asFraction asFloat
 ]
 
-{ #category : #'instance creation' }
+{ #category : #converting }
 Wheel >> asFraction [
 
 	"comment stating purpose of instance-side method"
