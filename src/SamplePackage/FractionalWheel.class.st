@@ -109,17 +109,14 @@ FractionalWheel >> < aMagnitude [
 ]
 
 { #category : #comparing }
-FractionalWheel >> = aMagnitude [
+FractionalWheel >> = aNumber [
 
 	"Compare the receiver with the argument and answer with true if the receiver is equal to the argument. Otherwise answer false."
 
-	m = 0
-		ifTrue: [ 
-			aMagnitude isWheel
-				ifTrue: [ 
-				^ l = aMagnitude numerator & (m = aMagnitude denominator) ]
-				ifFalse: [ ^ false ] ]
-		ifFalse: [ ^ self asFraction = aMagnitude ]
+	aNumber isWheel ifTrue: [ 
+		| tmp |
+		tmp := aNumber asWheel.
+		^ l = tmp numerator & (m = tmp denominator) ] ifFalse: [ ^aNumber = self ]
 ]
 
 { #category : #converting }
@@ -146,7 +143,13 @@ FractionalWheel >> asFraction [
 
 	"I know that if I divide by zero the following message will raise an error, but hey, why did you ask to represent me as a Fraction!"
 
-	^ l / m
+	^ Fraction numerator: l denominator: m
+]
+
+{ #category : #converting }
+FractionalWheel >> asWheel [
+
+	^self
 ]
 
 { #category : #private }
@@ -208,9 +211,11 @@ FractionalWheel >> printOn: aStream base: base [
 	l printOn: aStream base: base.
 	aStream nextPut: $|.
 	m printOn: aStream base: base.
-	aStream nextPut: Character space; nextPut: $(.
+	aStream
+		nextPut: Character space;
+		nextPut: $(.
 	m = 0
-		ifTrue: [ aStream nextPutAll: 'nan' ]
+		ifTrue: [ l = 0 ifTrue: [aStream nextPutAll: 'nan'] ifFalse: [ aStream nextPutAll: 'inf' ] ]
 		ifFalse: [ self asFloat printOn: aStream base: base ].
 	aStream nextPut: $)
 ]

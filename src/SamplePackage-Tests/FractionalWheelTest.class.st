@@ -10,7 +10,7 @@ Class {
 { #category : #'basic tests' }
 FractionalWheelTest >> testCanBeDividedByZero [
 
-	self assert: FractionalWheel one / 0 equals: FractionalWheel zero
+	self assert: FractionalWheel one / 0 equals: FractionalWheel inf
 ]
 
 { #category : #'basic tests' }
@@ -33,7 +33,25 @@ FractionalWheelTest >> testFractionIsConvertibleToWheel [
 ]
 
 { #category : #tests }
-FractionalWheelTest >> testIntegerIsConvertibleToWheel [
+FractionalWheelTest >> testLargeIntegerIsConvertibleToWheel [
 
-	self assert: 0 asWheel equals: FractionalWheel zero
+	| tmp |
+	tmp := SmallInteger maxVal * 1.
+	self
+		assert: tmp asWheel
+		equals: (FractionalWheel numerator: tmp denominator: 1)
+]
+
+{ #category : #tests }
+FractionalWheelTest >> testSmallIntegerIsConvertibleToWheel [
+
+	self assert: 1 asWheel equals: FractionalWheel one
+]
+
+{ #category : #tests }
+FractionalWheelTest >> testWheelIsConvertibleToWheel [
+
+	| tmp |
+	tmp := FractionalWheel inf.
+	self assert: tmp asWheel equals: tmp
 ]
