@@ -20,12 +20,8 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #FractionalWheel,
-	#superclass : #Number,
-	#instVars : [
-		'l',
-		'm'
-	],
-	#category : #'SamplePackage-Numeric'
+	#superclass : #Fraction,
+	#category : #'SamplePackage-Numbers'
 }
 
 { #category : #constants }
@@ -45,9 +41,17 @@ FractionalWheel class >> nan [
 ]
 
 { #category : #'instance creation' }
+FractionalWheel class >> new [
+
+	self error: 'Fractional wheels should only be created or converted explicitly'
+]
+
+{ #category : #'instance creation' }
 FractionalWheel class >> numerator: n denominator: d [
 
-	^ self new numerator: n; denominator: d
+	^ self basicNew
+		  numerator: n;
+		  denominator: d
 ]
 
 { #category : #constants }
@@ -74,23 +78,34 @@ FractionalWheel class >> zero [
 FractionalWheel >> * aNumber [
 
 	"Answer the result of multiplying the receiver by aNumber."
-	|x|
-	x := aNumber asWheel.
-	^ self class numerator: l * x numerator denominator: m * x denominator
+
+	|tmp|
+	tmp := aNumber asWheel.
+	denominator * tmp denominator  = 0
+		ifTrue: [ ^FractionalWheel numerator: numerator * tmp numerator denominator: 0 ]
+		ifFalse: [ super * aNumber ]
 ]
 
 { #category : #arithmetic }
-FractionalWheel >> + aNumber [ 
-	"Answer the sum of the receiver and aNumber."
+FractionalWheel >> + aNumber [
 
-	^self asFraction + aNumber
+	| a b |
+	a := aNumber asWheel.
+	b := FractionalWheel
+		     numerator:
+		     numerator * a denominator + (a numerator * denominator)
+		     denominator: denominator * a denominator.
+	b denominator = 0
+		ifTrue: [ ^ b ]
+		ifFalse: [ ^ b asFraction reduced ]
 ]
 
 { #category : #arithmetic }
-FractionalWheel >> - aNumber [ 
+FractionalWheel >> - aNumber [
+
 	"Answer the difference between the receiver and aNumber."
 
-	^self asFraction - aNumber
+	^ self + aNumber negative
 ]
 
 { #category : #arithmetic }
@@ -113,22 +128,20 @@ FractionalWheel >> = aNumber [
 
 	"Compare the receiver with the argument and answer with true if the receiver is equal to the argument. Otherwise answer false."
 
-	aNumber isWheel ifTrue: [ 
-		| tmp |
-		tmp := aNumber asWheel.
-		^ l = tmp numerator & (m = tmp denominator) ] ifFalse: [ ^aNumber = self ]
+	aNumber isWheel
+		ifTrue: [ 
+			| tmp |
+			tmp := aNumber asWheel.
+			^ super numerator = tmp numerator & (super denominator = tmp denominator) ]
+		ifFalse: [ ^ aNumber = self ]
 ]
 
 { #category : #converting }
 FractionalWheel >> adaptToFraction: rcvr andSend: selector [
-	"If I am involved in arithmetic with a Fraction, convert us and evaluate exprBlock."
-	^(rcvr asWheel) perform: selector with: self
-]
 
-{ #category : #converting }
-FractionalWheel >> adaptToInteger: rcvr andSend: selector [
-	"If I am involved in arithmetic with a Integer, convert us and evaluate exprBlock."
-	^ (FractionalWheel numerator: rcvr denominator: 1) perform: selector with: self
+	"If I am involved in arithmetic with a Fraction, convert us and evaluate exprBlock."
+
+	denominator = 0 ifTrue: [ ^self error: 'Not implemented' ] ifFalse: [ ^rcvr perform: selector with: numerator / denominator ]
 ]
 
 { #category : #converting }
@@ -139,29 +152,15 @@ FractionalWheel >> asFloat [
 ]
 
 { #category : #converting }
-FractionalWheel >> asFraction [
-
-	"I know that if I divide by zero the following message will raise an error, but hey, why did you ask to represent me as a Fraction!"
-
-	^ Fraction numerator: l denominator: m
-]
-
-{ #category : #converting }
 FractionalWheel >> asWheel [
 
 	^self
 ]
 
 { #category : #private }
-FractionalWheel >> denominator [
+FractionalWheel >> denominator: aNumber [
 
-^m
-]
-
-{ #category : #private }
-FractionalWheel >> denominator: newDenominator [
-
-m := newDenominator
+	denominator := aNumber asInteger
 ]
 
 { #category : #comparing }
@@ -169,8 +168,8 @@ FractionalWheel >> hash [
 
 	"My most close relative is Fraction class, that's why I try to have the same hash value whenever it's possible (ie. when I don't divide by zero), otherwise I use custom hash formula from Point class because it has the same structure: pair of numbers."
 
-	m = 0
-		ifTrue: [ ^ (l@m) hash ]
+	super denominator = 0
+		ifTrue: [ ^ (super numerator @ super denominator) hash ]
 		ifFalse: [ ^ self asFraction hash ]
 ]
 
@@ -179,7 +178,7 @@ FractionalWheel >> isFraction [
 
 	"I'm a fraction only when I don't divide by zero."
 
-	m = 0
+	super denominator = 0
 		ifTrue: [ ^ false ]
 		ifFalse: [ ^ true ]
 ]
@@ -191,15 +190,9 @@ FractionalWheel >> isWheel [
 ]
 
 { #category : #private }
-FractionalWheel >> numerator [
+FractionalWheel >> numerator: aNumber [
 
-^l
-]
-
-{ #category : #private }
-FractionalWheel >> numerator: newNumerator [
-
-	l := newNumerator
+	numerator := aNumber asInteger
 ]
 
 { #category : #printing }
@@ -208,14 +201,17 @@ FractionalWheel >> printOn: aStream base: base [
 	"This method should print a representation of the number for the given base,
 	excluding the base prefix (and the letter r for radix)"
 
-	l printOn: aStream base: base.
+	super numerator printOn: aStream base: base.
 	aStream nextPut: $|.
-	m printOn: aStream base: base.
+	super denominator printOn: aStream base: base.
 	aStream
 		nextPut: Character space;
 		nextPut: $(.
-	m = 0
-		ifTrue: [ l = 0 ifTrue: [aStream nextPutAll: 'nan'] ifFalse: [ aStream nextPutAll: 'inf' ] ]
+	super denominator = 0
+		ifTrue: [ 
+			super numerator = 0
+				ifTrue: [ aStream nextPutAll: 'nan' ]
+				ifFalse: [ aStream nextPutAll: 'inf' ] ]
 		ifFalse: [ self asFloat printOn: aStream base: base ].
 	aStream nextPut: $)
 ]
@@ -225,7 +221,9 @@ FractionalWheel >> reciprocal [
 
 	"((0/2 asWheel) reciprocal) >>> (2/0 asWheel)"
 
-	^ self class numerator: m denominator: l
+	^ self class
+		  numerator: super denominator
+		  denominator: super numerator
 ]
 
 { #category : #'truncation and round off' }
@@ -242,7 +240,7 @@ FractionalWheel >> storeOn: aStream base: base [
 	"This method should print a representation of the number for the given base,
 	including the base prefix (with letter r for radix)"
 
-	l storeOn: aStream base: base.
+	super numerator storeOn: aStream base: base.
 	aStream nextPut: $|.
-	m storeOn: aStream base: base
+	super denominator storeOn: aStream base: base
 ]

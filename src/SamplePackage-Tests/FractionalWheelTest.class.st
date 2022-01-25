@@ -7,22 +7,39 @@ Class {
 	#category : #'SamplePackage-Tests'
 }
 
+{ #category : #'tests - basic' }
+FractionalWheelTest >> testCanBeConstructedByPrototype [
+
+	self
+		assert: FractionalWheel nan
+		equals: (FractionalWheel numerator: 0 denominator: 0).
+	self
+		assert: FractionalWheel zero
+		equals: (FractionalWheel numerator: 0 denominator: 1).
+	self
+		assert: FractionalWheel inf
+		equals: (FractionalWheel numerator: 1 denominator: 0).
+	self
+		assert: FractionalWheel one
+		equals: (FractionalWheel numerator: 1 denominator: 1)
+]
+
 { #category : #'tests - arithmetic' }
 FractionalWheelTest >> testCanBeDividedByZero [
 
-	self assert: FractionalWheel one / 0 equals: FractionalWheel inf
+	self assert: 1 / 0 equals: FractionalWheel inf
 ]
 
 { #category : #'tests - basic' }
-FractionalWheelTest >> testCanByConstructed [
+FractionalWheelTest >> testCanBeExplicitlyConstructed [
 
-	self deny: FractionalWheel nan equals: nil
+	self deny: (FractionalWheel numerator: 2 denominator: 0) equals: nil
 ]
 
 { #category : #'tests - arithmetic' }
 FractionalWheelTest >> testCanComputeReciprocalOfZero [
 
-	self assert: (0 / 2 asWheel) reciprocal equals: 2 asWheel / 0
+	self assert: (0 asWheel / 2) reciprocal equals: 2 asWheel / 0
 ]
 
 { #category : #'tests - conversions' }
@@ -36,6 +53,12 @@ FractionalWheelTest >> testFractionIsConvertibleToWheel [
 	self
 		assert: 1 / 3 asWheel
 		equals: (FractionalWheel numerator: 1 denominator: 3)
+]
+
+{ #category : #'tests - arithmetic' }
+FractionalWheelTest >> testHandleArithmeticExpression [
+
+	self assert: 1 + (1/(1 / (1 - 1))) equals: 1
 ]
 
 { #category : #'tests - arithmetic' }
@@ -64,7 +87,7 @@ FractionalWheelTest >> testLargeIntegerIsConvertibleToWheel [
 { #category : #'tests - arithmetic' }
 FractionalWheelTest >> testNumberZeroCanDividedByWheelOne [
 
-		self assert: 0 / FractionalWheel one equals: FractionalWheel zero
+	self assert: 0 / FractionalWheel one equals: 0
 ]
 
 { #category : #'tests - conversions' }
@@ -73,6 +96,12 @@ FractionalWheelTest >> testOrderOfWheelArgumentsDoesntMatter [
 	self flag: #todo. "It looks like there is no easy fix for this case"
 
 	self assert: 2 asWheel / 0 reciprocal equals: 2 / 0 asWheel
+]
+
+{ #category : #'tests - basic' }
+FractionalWheelTest >> testShouldNotBeDefaultConstructible [
+
+	self should: [FractionalWheel new] raise: Error
 ]
 
 { #category : #'tests - conversions' }
@@ -87,6 +116,12 @@ FractionalWheelTest >> testWheelIsConvertibleToWheel [
 	| tmp |
 	tmp := FractionalWheel inf.
 	self assert: tmp asWheel equals: tmp
+]
+
+{ #category : #'tests - arithmetic' }
+FractionalWheelTest >> testWheelOneCanBeDividedByZero [
+
+	self assert: FractionalWheel one / 0 equals: FractionalWheel inf
 ]
 
 { #category : #'tests - arithmetic' }
