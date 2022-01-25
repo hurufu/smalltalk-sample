@@ -19,6 +19,12 @@ FractionalWheelTest >> testCanByConstructed [
 	self deny: FractionalWheel nan equals: nil
 ]
 
+{ #category : #'tests - arithmetic' }
+FractionalWheelTest >> testCanComputeReciprocalOfZero [
+
+	self assert: (0 / 2 asWheel) reciprocal equals: 2 asWheel / 0
+]
+
 { #category : #'tests - conversions' }
 FractionalWheelTest >> testFloatIsConvertibleToWheel [
 
@@ -59,6 +65,14 @@ FractionalWheelTest >> testLargeIntegerIsConvertibleToWheel [
 FractionalWheelTest >> testNumberZeroCanDividedByWheelOne [
 
 		self assert: 0 / FractionalWheel one equals: FractionalWheel zero
+]
+
+{ #category : #'tests - conversions' }
+FractionalWheelTest >> testOrderOfWheelArgumentsDoesntMatter [
+
+	self flag: #todo. "It looks like there is no easy fix for this case"
+
+	self assert: 2 asWheel / 0 reciprocal equals: 2 / 0 asWheel
 ]
 
 { #category : #'tests - conversions' }

@@ -223,7 +223,9 @@ FractionalWheel >> printOn: aStream base: base [
 { #category : #arithmetic }
 FractionalWheel >> reciprocal [
 
-	^self class numerator: m denominator: l
+	"((0/2 asWheel) reciprocal) >>> (2/0 asWheel)"
+
+	^ self class numerator: m denominator: l
 ]
 
 { #category : #'truncation and round off' }
