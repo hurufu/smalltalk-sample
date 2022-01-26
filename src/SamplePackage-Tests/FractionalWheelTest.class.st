@@ -49,7 +49,7 @@ FractionalWheelTest >> testCanComputeReciprocalOfZero [
 	self assert: (0 asWheel / 2) reciprocal equals: 2 asWheel / 0
 ]
 
-{ #category : #'tests - arithmetic' }
+{ #category : #'tests - object' }
 FractionalWheelTest >> testDivisionProducesExpectedObjects [
 
 	self assert: (2 / 1) class equals: SmallInteger.
@@ -144,7 +144,7 @@ FractionalWheelTest >> testZeroCanBeDividedByZero [
 	self assert: FractionalWheel zero / FractionalWheel zero equals: FractionalWheel nan
 ]
 
-{ #category : #tests }
+{ #category : #'tests - object' }
 FractionalWheelTest >> testZeroDividedByAnIntegerProducesAFractionalWheel [
 
 	self flag: #todo. "I'm afraid there is no easy way to return instance of FractionalWheel from expression (0/2)"
