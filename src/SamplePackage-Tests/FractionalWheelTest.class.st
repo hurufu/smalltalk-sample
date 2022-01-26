@@ -97,6 +97,12 @@ FractionalWheelTest >> testHandleDivisionByZeroInTheMiddleOfCalculation [
 	self assert: res equals: tmp
 ]
 
+{ #category : #'tests - basic' }
+FractionalWheelTest >> testHash [
+
+	self deny: (1/0) hash equals: (2/0) hash
+]
+
 { #category : #'tests - conversions' }
 FractionalWheelTest >> testLargeIntegerIsConvertibleToWheel [
 
@@ -143,6 +149,14 @@ FractionalWheelTest >> testWheelIsConvertibleToWheel [
 FractionalWheelTest >> testWheelOneCanBeDividedByZero [
 
 	self assert: FractionalWheel one / 0 equals: FractionalWheel inf
+]
+
+{ #category : #'tests - conversions' }
+FractionalWheelTest >> testWheelsCanBeComparedToOtherWheels [
+
+	self flag: #todo. "I have to verify the white paper if wheels are even comparable in all cases"
+	self skip.
+	self assert: 2 / 0 < (100 / 0)
 ]
 
 { #category : #'tests - arithmetic' }

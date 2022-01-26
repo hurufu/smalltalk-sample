@@ -79,23 +79,22 @@ FractionalWheel >> * aNumber [
 
 	"Answer the result of multiplying the receiver by aNumber."
 
-	| tmp |
-	tmp := aNumber asWheel.
-	^self class numerator: numerator * tmp numerator denominator: denominator * tmp denominator 
+	| a |
+	a := aNumber asWheel.
+	^(self class
+		     numerator: numerator * a numerator
+		     denominator: denominator * a denominator ) asFractionWhenPossible
 ]
 
 { #category : #arithmetic }
 FractionalWheel >> + aNumber [
 
-	| a b |
+	| a |
 	a := aNumber asWheel.
-	b := FractionalWheel
-		     numerator:
-		     numerator * a denominator + (a numerator * denominator)
-		     denominator: denominator * a denominator.
-	b denominator = 0
-		ifTrue: [ ^ b ]
-		ifFalse: [ ^ b asFraction reduced ]
+	^ (self class
+		   numerator:
+		   numerator * a denominator + (a numerator * denominator)
+		   denominator: denominator * a denominator) asFractionWhenPossible
 ]
 
 { #category : #arithmetic }
@@ -135,14 +134,6 @@ FractionalWheel >> = aNumber [
 ]
 
 { #category : #converting }
-FractionalWheel >> adaptToFraction: rcvr andSend: selector [
-
-	"If I am involved in arithmetic with a Fraction, convert us and evaluate exprBlock."
-
-	denominator = 0 ifTrue: [ ^self error: 'Not implemented' ] ifFalse: [ ^rcvr perform: selector with: numerator / denominator ]
-]
-
-{ #category : #converting }
 FractionalWheel >> asFloat [
 
 	denominator = 0
@@ -155,6 +146,14 @@ FractionalWheel >> asFloat [
 		ifFalse: [ ^ super asFloat ]
 ]
 
+{ #category : #private }
+FractionalWheel >> asFractionWhenPossible [
+
+	(denominator = 0) | (numerator = 0)
+		ifTrue: [ ^ self ]
+		ifFalse: [ ^ super reduced ]
+]
+
 { #category : #converting }
 FractionalWheel >> asWheel [
 
@@ -164,7 +163,14 @@ FractionalWheel >> asWheel [
 { #category : #private }
 FractionalWheel >> denominator: aNumber [
 
-	denominator := aNumber asInteger
+	"I keep negative number always in the numerator"
+
+	| tmp |
+	tmp := aNumber asInteger.
+	tmp < 0 ifTrue: [ 
+		tmp := tmp negated.
+		numerator := numerator negated ].
+	denominator := tmp
 ]
 
 { #category : #comparing }
@@ -174,13 +180,7 @@ FractionalWheel >> hash [
 
 	super denominator = 0
 		ifTrue: [ ^ (super numerator @ super denominator) hash ]
-		ifFalse: [ ^ self asFraction hash ]
-]
-
-{ #category : #testing }
-FractionalWheel >> isFraction [
-
-	^true
+		ifFalse: [ ^ super hash ]
 ]
 
 { #category : #testing }
@@ -198,41 +198,15 @@ FractionalWheel >> numerator: aNumber [
 { #category : #printing }
 FractionalWheel >> printOn: aStream base: base [
 
-	"This method should print a representation of the number for the given base,
-	excluding the base prefix (and the letter r for radix)"
+	"Print a representation excluding the base prefix (and the letter r for radix) of the number.
+	Format is rather verbose with an approximate floating point value for debugging purpose."
 
 	super numerator printOn: aStream base: base.
-	aStream nextPut: $|.
+	aStream nextPut: $/.
 	super denominator printOn: aStream base: base.
 	aStream
 		nextPut: Character space;
 		nextPut: $(.
-	super denominator = 0
-		ifTrue: [ 
-			super numerator = 0
-				ifTrue: [ aStream nextPutAll: 'nan' ]
-				ifFalse: [ aStream nextPutAll: 'inf' ] ]
-		ifFalse: [ self asFloat printOn: aStream base: base ].
+	self asFloat printOn: aStream base: base.
 	aStream nextPut: $)
-]
-
-{ #category : #arithmetic }
-FractionalWheel >> reciprocal [
-
-	"((0/2 asWheel) reciprocal) >>> (2/0 asWheel)"
-
-	^ self class
-		  numerator: super denominator
-		  denominator: super numerator
-]
-
-{ #category : #printing }
-FractionalWheel >> storeOn: aStream base: base [
-
-	"This method should print a representation of the number for the given base,
-	including the base prefix (with letter r for radix)"
-
-	super numerator storeOn: aStream base: base.
-	aStream nextPut: $|.
-	super denominator storeOn: aStream base: base
 ]
