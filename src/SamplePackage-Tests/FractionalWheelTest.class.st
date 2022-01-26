@@ -137,6 +137,15 @@ FractionalWheelTest >> testSmallIntegerIsConvertibleToWheel [
 	self assert: 1 asWheel equals: FractionalWheel one
 ]
 
+{ #category : #'tests - arithmetic' }
+FractionalWheelTest >> testSumIsProperlyCalclulated [
+
+	self skip.
+	self flags: #todo. "I don't really know how force FractionalWheel when doing (2 * (1 / 0))."
+	self assert: 4 + (1 / (1 / 0 * 2)) equals: 4.
+	self assert: 4 + (1 / (2 * (1 / 0))) equals: 4
+]
+
 { #category : #'tests - conversions' }
 FractionalWheelTest >> testWheelIsConvertibleToWheel [
 
