@@ -61,7 +61,14 @@ FractionalWheelTest >> testDivisionProducesExpectedObjects [
 { #category : #'tests - conversions' }
 FractionalWheelTest >> testFloatIsConvertibleToWheel [
 
-	self assert: 1.0 asWheel equals: FractionalWheel one
+	self assert: 1.0 asWheel equals: FractionalWheel one.
+	self assert: -0.0 asWheel equals: FractionalWheel zero.
+	self assert: Float infinity asWheel equals: FractionalWheel inf.
+	self
+		assert: Float negativeInfinity asWheel
+		equals: (FractionalWheel numerator: -1 denominator: 0).
+		"Compared to Float nan, FractionalWheel nan is well behaved and can be compared to itself"
+	self assert: Float nan asWheel equals: FractionalWheel nan
 ]
 
 { #category : #'tests - conversions' }
