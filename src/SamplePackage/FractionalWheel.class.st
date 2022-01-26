@@ -89,6 +89,8 @@ FractionalWheel >> * aNumber [
 { #category : #arithmetic }
 FractionalWheel >> + aNumber [
 
+	"Answer the result of adding aNumber to the receiver"
+
 	| a |
 	a := aNumber asWheel.
 	^ (self class
@@ -123,13 +125,15 @@ FractionalWheel >> < aMagnitude [
 { #category : #comparing }
 FractionalWheel >> = aNumber [
 
-	"Compare the receiver with the argument and answer with true if the receiver is equal to the argument. Otherwise answer false."
+	"Compare the receiver with the argument and answer with true if the receiver
+	is equal to the argument. Otherwise answer false."
 
 	aNumber isWheel
 		ifTrue: [ 
 			| tmp |
 			tmp := aNumber asWheel.
-			^ super numerator = tmp numerator & (super denominator = tmp denominator) ]
+			^ super numerator = tmp numerator
+			  & (super denominator = tmp denominator) ]
 		ifFalse: [ ^ aNumber = self ]
 ]
 
@@ -176,7 +180,10 @@ FractionalWheel >> denominator: aNumber [
 { #category : #comparing }
 FractionalWheel >> hash [
 
-	"My most close relative is Fraction class, that's why I try to have the same hash value whenever it's possible (ie. when I don't divide by zero), otherwise I use custom hash formula from Point class because it has the same structure: pair of numbers."
+	"My most close relative is Fraction class, that's why I try to have the same
+	hash value whenever it's possible (ie. when I don't divide by zero), otherwise
+	I use custom hash formula from Point class because it has the same structure:
+	pair of numbers."
 
 	super denominator = 0
 		ifTrue: [ ^ (super numerator @ super denominator) hash ]
@@ -198,8 +205,9 @@ FractionalWheel >> numerator: aNumber [
 { #category : #printing }
 FractionalWheel >> printOn: aStream base: base [
 
-	"Print a representation excluding the base prefix (and the letter r for radix) of the number.
-	Format is rather verbose with an approximate floating point value for debugging purpose."
+	"Print a representation excluding the base prefix (and the letter r for radix)
+	of the number. Format is rather verbose with an approximate floating point
+	value for debugging purpose."
 
 	super numerator printOn: aStream base: base.
 	aStream nextPut: $/.
