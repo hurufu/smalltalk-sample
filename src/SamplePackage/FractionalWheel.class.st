@@ -153,9 +153,9 @@ FractionalWheel >> asFloat [
 { #category : #private }
 FractionalWheel >> asFractionWhenPossible [
 
-	(denominator = 0) | (numerator = 0)
+	denominator = 0 | (numerator = 0)
 		ifTrue: [ ^ self ]
-		ifFalse: [ ^ super reduced ]
+		ifFalse: [ ^ self reduced ]
 ]
 
 { #category : #converting }
