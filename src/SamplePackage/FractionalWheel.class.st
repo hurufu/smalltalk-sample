@@ -79,11 +79,9 @@ FractionalWheel >> * aNumber [
 
 	"Answer the result of multiplying the receiver by aNumber."
 
-	|tmp|
+	| tmp |
 	tmp := aNumber asWheel.
-	denominator * tmp denominator  = 0
-		ifTrue: [ ^FractionalWheel numerator: numerator * tmp numerator denominator: 0 ]
-		ifFalse: [ super * aNumber ]
+	^self class numerator: numerator * tmp numerator denominator: denominator * tmp denominator 
 ]
 
 { #category : #arithmetic }
@@ -105,7 +103,7 @@ FractionalWheel >> - aNumber [
 
 	"Answer the difference between the receiver and aNumber."
 
-	^ self + aNumber negative
+	^ self + aNumber negated
 ]
 
 { #category : #arithmetic }
@@ -146,9 +144,15 @@ FractionalWheel >> adaptToFraction: rcvr andSend: selector [
 
 { #category : #converting }
 FractionalWheel >> asFloat [
-	"Answer a floating-point number approximating the receiver."
 
-	^self asFraction asFloat
+	denominator = 0
+		ifTrue: [ 
+			^Float perform: (numerator
+					 compareWith: 0
+					 ifLesser: [ #negativeInfinity ]
+					 ifEqual: [ #nan ]
+					 ifGreater: [ #infinity ]) ]
+		ifFalse: [ ^ super asFloat ]
 ]
 
 { #category : #converting }
@@ -176,11 +180,7 @@ FractionalWheel >> hash [
 { #category : #testing }
 FractionalWheel >> isFraction [
 
-	"I'm a fraction only when I don't divide by zero."
-
-	super denominator = 0
-		ifTrue: [ ^ false ]
-		ifFalse: [ ^ true ]
+	^true
 ]
 
 { #category : #testing }
@@ -224,14 +224,6 @@ FractionalWheel >> reciprocal [
 	^ self class
 		  numerator: super denominator
 		  denominator: super numerator
-]
-
-{ #category : #'truncation and round off' }
-FractionalWheel >> round: numberOfWishedDecimal [
-	"Round the decimal part of the receiver to be limited to the number of wished decimal. Only leave a fixed amount of decimal"
-   < expr: 10.12345 round: 2 result: 10.12 >
-	< expr: 10.199999999 round: 2 result: 10.2 > 
-	^self asFloat round: numberOfWishedDecimal
 ]
 
 { #category : #printing }

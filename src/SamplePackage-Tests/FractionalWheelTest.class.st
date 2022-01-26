@@ -7,6 +7,13 @@ Class {
 	#category : #'SamplePackage-Tests'
 }
 
+{ #category : #'tests - conversions' }
+FractionalWheelTest >> testAsFloat [
+
+	self assert: FractionalWheel inf asFloat equals: Float infinity.
+	self assert: (-5 / 0) asFloat equals: Float negativeInfinity
+]
+
 { #category : #'tests - basic' }
 FractionalWheelTest >> testCanBeConstructedByPrototype [
 
@@ -42,6 +49,21 @@ FractionalWheelTest >> testCanComputeReciprocalOfZero [
 	self assert: (0 asWheel / 2) reciprocal equals: 2 asWheel / 0
 ]
 
+{ #category : #'tests - arithmetic' }
+FractionalWheelTest >> testDivisionProducesExpectedObjects [
+
+	self assert: (2 / 1) class equals: SmallInteger.
+	self assert: (1 / 2) class equals: Fraction.
+	self assert: (2 / 0) class equals: FractionalWheel.
+	self assert: (FractionalWheel zero / 2) class equals: FractionalWheel.
+	
+	self flag: #todo. "I'm afraid there is no easy way to return instance of FractionalWheel from expression (0/2)"
+	self assert: (0 / 2) class equals: FractionalWheel.
+
+	
+	
+]
+
 { #category : #'tests - conversions' }
 FractionalWheelTest >> testFloatIsConvertibleToWheel [
 
@@ -65,7 +87,7 @@ FractionalWheelTest >> testHandleArithmeticExpression [
 FractionalWheelTest >> testHandleDivisionByZeroInTheMiddleOfCalculation [
 
 	| tmp res |
-	tmp := 3 / 5 asWheel.
+	tmp := (3 / 5) asWheel.
 	res := tmp + (1 / (tmp / (tmp - tmp))).
 
 	self
